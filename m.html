@@ -1,0 +1,940 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Information, Communication and Signals</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Kalam:wght@400;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background: #20344f;
+    color: #263449;
+    overflow: hidden;
+}
+
+.deck {
+    height: 100vh;
+    width: 100%;
+    position: relative;
+    background: #20344f;
+}
+
+.slide {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 35px 5vw 90px;
+    opacity: 0;
+    transform: translateX(35px);
+    pointer-events: none;
+    transition: 0.5s ease;
+}
+
+.slide.active {
+    opacity: 1;
+    transform: translateX(0);
+    pointer-events: auto;
+}
+
+.panel {
+    width: min(1200px, 100%);
+    height: 100%;
+    overflow-y: auto;
+    background: #ffffff;
+    border-radius: 15px;
+    padding: 30px 38px;
+    box-shadow: 0 10px 30px #00000030;
+}
+
+.kicker {
+    color: #315d79;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    margin-bottom: 12px;
+}
+
+h1 {
+    font-size: clamp(36px, 5vw, 62px);
+    color: #263e60;
+    line-height: 1.15;
+    margin-bottom: 15px;
+}
+
+h2 {
+    font-size: clamp(27px, 3.5vw, 42px);
+    color: #263e60;
+    margin-bottom: 15px;
+}
+
+h3 {
+    font-size: 20px;
+    margin-bottom: 8px;
+    color: #315d79;
+}
+
+p {
+    line-height: 1.55;
+    margin-bottom: 10px;
+}
+
+.hand {
+    font-family: 'Kalam', cursive;
+    font-size: clamp(23px, 2.5vw, 32px);
+    color: #315d79;
+    font-weight: 700;
+}
+
+.definition {
+    background: #eef3f8;
+    border-left: 5px solid #315d79;
+    padding: 16px 20px;
+    border-radius: 8px;
+    font-size: clamp(16px, 1.5vw, 20px);
+    line-height: 1.6;
+    margin: 12px 0 18px;
+}
+
+.definition b {
+    color: #173b5e;
+}
+
+.body {
+    font-size: 16px;
+    line-height: 1.6;
+}
+
+.small {
+    font-size: 14px;
+    color: #526078;
+    line-height: 1.5;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 13px;
+    margin: 12px 0;
+}
+
+.grid.three {
+    grid-template-columns: repeat(3, 1fr);
+}
+
+.card {
+    background: #f4f7fb;
+    border: 1px solid #d5dee8;
+    padding: 17px;
+    border-radius: 13px;
+}
+
+.card p:last-child {
+    margin-bottom: 0;
+}
+
+.bigword {
+    font-family: 'Kalam', cursive;
+    font-size: 34px;
+    color: #315d79;
+    font-weight: 700;
+}
+
+ul {
+    padding-left: 22px;
+    margin-top: 8px;
+}
+
+li {
+    margin: 6px 0;
+    font-size: 15px;
+    line-height: 1.5;
+}
+
+.callout {
+    background: #edf4f8;
+    border-left: 5px solid #315d79;
+    padding: 13px 17px;
+    border-radius: 8px;
+    margin-top: 14px;
+    font-size: 16px;
+    line-height: 1.5;
+}
+
+.wavebox {
+    background: #ffffff;
+    border: 1px solid #d5dee8;
+    padding: 12px;
+    border-radius: 12px;
+    margin-top: 14px;
+}
+
+svg {
+    width: 100%;
+    height: auto;
+}
+
+.diagram-label {
+    font-size: 16px;
+    fill: #263449;
+    font-weight: bold;
+}
+
+.compare {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+    font-size: 15px;
+}
+
+.compare th {
+    background: #315d79;
+    color: white;
+    padding: 13px;
+    text-align: left;
+}
+
+.compare td {
+    background: #f4f7fb;
+    padding: 12px;
+    border: 1px solid #d5dee8;
+    line-height: 1.5;
+}
+
+.tag {
+    display: inline-block;
+    padding: 7px 12px;
+    background: #eef3f8;
+    color: #315d79;
+    border-radius: 6px;
+    font-size: 13px;
+    margin: 4px;
+    font-weight: 600;
+}
+
+.footer {
+    position: absolute;
+    bottom: 20px;
+    left: 5vw;
+    right: 5vw;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: white;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.progress {
+    flex: 1;
+    height: 6px;
+    background: #ffffff50;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.progress span {
+    display: block;
+    height: 100%;
+    width: 0;
+    background: #8bb8d6;
+    transition: 0.4s;
+}
+
+.controls {
+    position: absolute;
+    right: 5vw;
+    bottom: 55px;
+    display: flex;
+    gap: 9px;
+    align-items: center;
+}
+
+button {
+    border: none;
+    border-radius: 8px;
+    padding: 10px 17px;
+    background: #315d79;
+    color: white;
+    font-family: 'Poppins';
+    font-weight: 600;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #477b9e;
+}
+
+button.secondary {
+    background: #526078;
+}
+
+.counter {
+    color: white;
+    font-weight: bold;
+}
+
+.draw {
+    stroke-dasharray: 1000;
+    stroke-dashoffset: 1000;
+    animation: draw 2s ease forwards;
+}
+
+@keyframes draw {
+    to { stroke-dashoffset: 0; }
+}
+
+@keyframes appear {
+    from {
+        opacity: 0;
+        transform: translateY(12px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.slide.active .card {
+    animation: appear 0.5s ease both;
+}
+
+@media(max-width:700px) {
+    .slide {
+        padding: 15px 12px 100px;
+    }
+
+    .panel {
+        padding: 20px 16px;
+    }
+
+    .grid,
+    .grid.three {
+        grid-template-columns: 1fr;
+    }
+
+    .controls {
+        right: 12px;
+        bottom: 50px;
+    }
+
+    .footer {
+        left: 12px;
+        right: 12px;
+    }
+
+    .compare {
+        font-size: 12px;
+    }
+
+    .compare td,
+    .compare th {
+        padding: 8px;
+    }
+}
+
+@media(prefers-reduced-motion:reduce) {
+    *, *::before, *::after {
+        animation: none !important;
+        transition: none !important;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="deck">
+
+<!-- SLIDE 1 -->
+<section class="slide active">
+<div class="panel">
+    <div class="kicker">CLASS 10 • INFORMATION AND COMMUNICATION TECHNOLOGY</div>
+    <h1>Information,<br>Communication<br>& Signals</h1>
+    <p class="hand">Information and Communication Technology</p>
+    <p class="body">An overview of information and communication technologies, with a focus on analogue and digital signals.</p>
+    <br>
+    <span class="tag">Class 10</span>
+    <span class="tag">ICT</span>
+    <span class="tag">Signals</span>
+</div>
+</section>
+
+<!-- SLIDE 2 -->
+<section class="slide">
+<div class="panel">
+    <div class="kicker">01 • INTRODUCTION</div>
+    <h2>Information and Communication</h2>
+
+    <div class="grid">
+        <div class="card">
+            <div class="bigword">Information</div>
+            <p class="body"><b>Information is a set of data.</b></p>
+        </div>
+
+        <div class="card">
+            <div class="bigword">Communication</div>
+            <p class="body"><b>Communication is the act of telling information to others.</b></p>
+        </div>
+    </div>
+
+    <div class="callout">
+        <b>Example:</b> Sharing information through a mobile phone, email or computer is a form of communication.
+    </div>
+</div>
+</section>
+
+<!-- SLIDE 3 -->
+<section class="slide">
+<div class="panel">
+    <div class="kicker">02 • ICT</div>
+    <h2>Information and Communication Technology</h2>
+
+    <div class="definition">
+        <b>Information and Communication Technology (ICT)</b> is the use of modern digital technologies for transferring information.
+    </div>
+
+    <div class="grid three">
+        <div class="card">
+            <div class="bigword">I</div>
+            <h3>Information</h3>
+            <p class="small">Data and messages</p>
+        </div>
+
+        <div class="card">
+            <div class="bigword">C</div>
+            <h3>Communication</h3>
+            <p class="small">Sharing information</p>
+        </div>
+
+        <div class="card">
+            <div class="bigword">T</div>
+            <h3>Technology</h3>
+            <p class="small">Digital tools and devices</p>
+        </div>
+    </div>
+
+    <p class="body">ICT tools use signals to transfer data from one place to another.</p>
+</div>
+</section>
+
+<!-- SLIDE 4 -->
+<section class="slide">
+<div class="panel">
+    <div class="kicker">03 • ICT TOOLS</div>
+    <h2>Examples of ICT Tools</h2>
+
+    <div class="grid three">
+        <div class="card">
+            <h3>Computers</h3>
+            <p class="small">Laptops and computers</p>
+        </div>
+
+        <div class="card">
+            <h3>Mobile phones</h3>
+            <p class="small">Mobile communication</p>
+        </div>
+
+        <div class="card">
+            <h3>Ground stations</h3>
+            <p class="small">Communication systems</p>
+        </div>
+
+        <div class="card">
+            <h3>Satellites</h3>
+            <p class="small">Satellite communication</p>
+        </div>
+
+        <div class="card">
+            <h3>Television and radio</h3>
+            <p class="small">Digital TV, Dish TV and radio</p>
+        </div>
+
+        <div class="card">
+            <h3>Internet and fax</h3>
+            <p class="small">Transfer of information</p>
+        </div>
+    </div>
+</div>
+</section>
+
+<!-- SLIDE 5 -->
+<section class="slide">
+<div class="panel">
+    <div class="kicker">04 • TRANSFER OF INFORMATION</div>
+    <h2>How Information Travels</h2>
+
+    <p class="body">
+        ICT tools use signals to transfer data from one place to another. Signals can be produced, stored and transferred using ICT tools.
+    </p>
+
+    <div class="wavebox">
+        <svg viewBox="0 0 800 180">
+            <rect x="20" y="45" width="170" height="90" rx="15"
+            fill="#dbeafe" stroke="#60a5fa" stroke-width="3"/>
+
+            <rect x="610" y="45" width="170" height="90" rx="15"
+            fill="#e8eef5" stroke="#315d79" stroke-width="3"/>
+
+            <text x="105" y="98" text-anchor="middle"
+            font-size="22" font-weight="bold" fill="#1e3a8a">Sender</text>
+
+            <text x="695" y="98" text-anchor="middle"
+            font-size="22" font-weight="bold" fill="#1e3a8a">Receiver</text>
+
+            <path d="M205 90 H585" stroke="#315d79"
+            stroke-width="5" stroke-linecap="round" class="draw"/>
+
+            <path d="M565 75 L590 90 L565 105"
+            fill="none" stroke="#315d79" stroke-width="5"/>
+
+            <text x="400" y="65" text-anchor="middle"
+            font-size="19" fill="#315d79">Signal carries data</text>
+
+            <text x="400" y="128" text-anchor="middle"
+            font-size="15" fill="#475569">Digital or analogue</text>
+        </svg>
+    </div>
+
+    <p class="hand" style="text-align:center">Sender → Signal → Receiver</p>
+</div>
+</section>
+
+<!-- SLIDE 6 -->
+<section class="slide">
+<div class="panel">
+    <div class="kicker">05 • SIGNAL</div>
+    <h2>What is a Signal?</h2>
+
+    <div class="definition">
+        <b>Signals are physical quantities that change with time.</b>
+    </div>
+
+    <div class="grid">
+        <div class="card">
+            <h3>Types of signals</h3>
+            <ul>
+                <li>Electrical signals</li>
+                <li>Radio waves</li>
+                <li>Light waves</li>
+            </ul>
+        </div>
+
+        <div class="card">
+            <h3>Signals carry</h3>
+            <ul>
+                <li>Coded messages</li>
+                <li>Data</li>
+                <li>Information from sender to receiver</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="callout">
+        Signals are broadly divided into two groups: analogue signals and digital signals.
+    </div>
+</div>
+</section>
+
+<!-- SLIDE 7 -->
+<section class="slide">
+<div class="panel">
+    <div class="kicker">06 • ANALOGUE SIGNAL</div>
+    <h2>Analogue Signal</h2>
+
+    <div class="definition">
+        <b>An analogue signal is a continuous signal that changes continuously with time.</b>
+    </div>
+
+    <div class="grid">
+        <div class="card">
+            <h3>Representation</h3>
+            <p class="body">It is represented by a sine wave.</p>
+            <p class="hand">Continuous wave</p>
+        </div>
+
+        <div class="card">
+            <h3>Characteristics</h3>
+            <p class="body">It represents physical quantities that change continuously.</p>
+        </div>
+    </div>
+
+    <div class="wavebox">
+        <svg viewBox="0 0 700 190">
+            <path d="M45 92 H665 M65 160 V18"
+            stroke="#334155" stroke-width="2"/>
+
+            <path d="M65 92 C95 -5 135 -5 165 92
+            S235 189 265 92 S335 -5 365 92
+            S435 189 465 92 S535 -5 565 92
+            S635 189 665 92"
+            fill="none" stroke="#315d79" stroke-width="5"
+            stroke-linecap="round"/>
+
+            <text x="675" y="98" class="diagram-label">Time</text>
+            <text x="12" y="20" class="diagram-label">Value</text>
+        </svg>
+    </div>
+</div>
+</section>
+
+<!-- SLIDE 8 -->
+<section class="slide">
+<div class="panel">
+    <div class="kicker">07 • ANALOGUE SIGNAL</div>
+    <h2>Features and Examples</h2>
+
+    <div class="grid">
+        <div class="card">
+            <h3>Characteristics</h3>
+            <ul>
+                <li>Analogue signals cannot be represented by 0 and 1.</li>
+                <li>They cannot be coded or compressed.</li>
+                <li>There is a greater chance of a decrease in data quality during transmission.</li>
+            </ul>
+        </div>
+
+        <div class="card">
+            <h3>Examples</h3>
+            <ul>
+                <li>Sound waves</li>
+                <li>Light waves</li>
+                <li>Infrared radiations</li>
+                <li>Radio waves</li>
+                <li>Electricity</li>
+                <li>Hands of clocks</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="callout">
+        Analogue signals have a greater chance of data quality decreasing during transmission.
+    </div>
+</div>
+</section>
+
+<!-- SLIDE 9 -->
+<section class="slide">
+<div class="panel">
+    <div class="kicker">08 • DIGITAL SIGNAL</div>
+    <h2>Digital Signal</h2>
+
+    <div class="definition">
+        <b>A non-continuous electrical signal having discontinuous, discrete values with time is called a digital signal.</b>
+    </div>
+
+    <div class="grid">
+        <div class="card">
+            <h3>Representation</h3>
+            <p class="body">It is represented by square waves.</p>
+            <p class="hand">0 and 1</p>
+        </div>
+
+        <div class="card">
+            <h3>Characteristics</h3>
+            <p class="body">It represents physical quantities that change in segments.</p>
+            <p class="small">It can be represented by 0 and 1.</p>
+        </div>
+    </div>
+
+    <div class="wavebox">
+        <svg viewBox="0 0 700 180">
+            <path d="M45 145 H670 M65 160 V15"
+            stroke="#334155" stroke-width="2"/>
+
+            <path d="M65 45 H145 V145 H225 V45
+            H305 V145 H385 V45 H465 V145
+            H545 V45 H625 V145"
+            fill="none" stroke="#315d79"
+            stroke-width="5" stroke-linejoin="round"/>
+
+            <text x="18" y="50" class="diagram-label">1</text>
+            <text x="18" y="150" class="diagram-label">0</text>
+            <text x="570" y="174" class="diagram-label">Time</text>
+        </svg>
+    </div>
+</div>
+</section>
+
+<!-- SLIDE 10 -->
+<section class="slide">
+<div class="panel">
+    <div class="kicker">09 • DIGITAL SIGNAL</div>
+    <h2>Features and Examples</h2>
+
+    <div class="grid">
+        <div class="card">
+            <h3>Characteristics</h3>
+            <ul>
+                <li>Digital signals can be coded and compressed.</li>
+                <li>There is less chance of data loss during transmission.</li>
+                <li>They can be stored in storage devices.</li>
+            </ul>
+        </div>
+
+        <div class="card">
+            <h3>Examples</h3>
+            <ul>
+                <li>Mobile phones</li>
+                <li>Computers and monitors</li>
+                <li>Digital thermometers</li>
+                <li>Audio files</li>
+                <li>Video files</li>
+                <li>Digital photographs</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="callout">
+        <b>Memory tip:</b> Digital TV, Dish TV and satellite TV use digital signals.
+    </div>
+</div>
+</section>
+
+<!-- SLIDE 11 -->
+<section class="slide">
+<div class="panel">
+    <div class="kicker">10 • DIGITAL SIGNAL</div>
+    <h2>Binary Combinations</h2>
+
+    <p class="body">
+        Digital signals use two digits, 0 and 1. Different combinations can be formed using these digits.
+    </p>
+
+    <table class="compare">
+        <tr>
+            <th>Number of digits</th>
+            <th>Possible combinations</th>
+        </tr>
+
+        <tr>
+            <td>1</td>
+            <td>0, 1</td>
+        </tr>
+
+        <tr>
+            <td>2</td>
+            <td>00, 01, 10, 11</td>
+        </tr>
+
+        <tr>
+            <td>3</td>
+            <td>000, 001, 010, 011, 100, 101, 110, 111</td>
+        </tr>
+    </table>
+
+    <p class="hand" style="text-align:center;margin-top:20px">
+        Only two digits: 0 and 1
+    </p>
+</div>
+</section>
+
+<!-- SLIDE 12 -->
+<section class="slide">
+<div class="panel">
+    <div class="kicker">11 • COMPARISON</div>
+    <h2>Analogue Signal vs Digital Signal</h2>
+
+    <table class="compare">
+        <tr>
+            <th>Analogue Signal</th>
+            <th>Digital Signal</th>
+        </tr>
+
+        <tr>
+            <td>Continuous electrical signal that changes continuously with time.</td>
+            <td>Non-continuous electrical signal having discrete values.</td>
+        </tr>
+
+        <tr>
+            <td>Represented by a sine wave.</td>
+            <td>Represented by square waves.</td>
+        </tr>
+
+        <tr>
+            <td>Cannot be coded or compressed.</td>
+            <td>Can be coded and compressed.</td>
+        </tr>
+
+        <tr>
+            <td>Greater chance of decrease in data quality during transmission.</td>
+            <td>Less chance of data loss during transmission.</td>
+        </tr>
+    </table>
+
+    <p class="hand" style="text-align:center;margin-top:18px">
+        Sine wave = Continuous | Square wave = Discrete
+    </p>
+</div>
+</section>
+
+<!-- SLIDE 13 -->
+<section class="slide">
+<div class="panel">
+    <div class="kicker">12 • IMPORTANCE</div>
+    <h2>Why are Digital Signals Preferred?</h2>
+
+    <p class="body">
+        Conversion of analogue signals to digital signals is preferred because digital signals have:
+    </p>
+
+    <div class="grid three">
+        <div class="card">
+            <div class="bigword">Less</div>
+            <h3>Chance of error</h3>
+        </div>
+
+        <div class="card">
+            <div class="bigword">Less</div>
+            <h3>External interference</h3>
+        </div>
+
+        <div class="card">
+            <div class="bigword">Less</div>
+            <h3>Cross-talk compared to analogue signals</h3>
+        </div>
+    </div>
+</div>
+</section>
+
+<!-- SLIDE 14 -->
+<section class="slide">
+<div class="panel">
+    <div class="kicker">13 • RECAP</div>
+    <h2>Important Points to Remember</h2>
+
+    <div class="grid">
+        <div class="card">
+            <h3>ICT</h3>
+            <p class="small">Use of modern digital technologies for transferring information.</p>
+        </div>
+
+        <div class="card">
+            <h3>Signal</h3>
+            <p class="small">Physical quantities that change with time.</p>
+        </div>
+
+        <div class="card">
+            <h3>Analogue Signal</h3>
+            <p class="small">Continuous signal represented by a sine wave.</p>
+        </div>
+
+        <div class="card">
+            <h3>Digital Signal</h3>
+            <p class="small">Non-continuous signal represented by square waves and 0s and 1s.</p>
+        </div>
+    </div>
+
+    <p class="hand" style="text-align:center;margin-top:20px">
+        End of Presentation
+    </p>
+</div>
+</section>
+
+<!-- NAVIGATION -->
+<div class="footer">
+    <span id="topic">INTRODUCTION</span>
+    <div class="progress">
+        <span id="bar"></span>
+    </div>
+    <span id="count">1 / 14</span>
+</div>
+
+<div class="controls">
+    <button class="secondary" id="prev">← Back</button>
+    <span class="counter" id="number">1</span>
+    <button id="next">Next →</button>
+</div>
+
+</div>
+
+<script>
+const slides = [...document.querySelectorAll('.slide')];
+
+const topics = [
+    'INTRODUCTION',
+    'INFORMATION',
+    'ICT',
+    'ICT TOOLS',
+    'TRANSFER OF INFORMATION',
+    'SIGNALS',
+    'ANALOGUE SIGNAL',
+    'ANALOGUE FEATURES',
+    'DIGITAL SIGNAL',
+    'DIGITAL FEATURES',
+    'BINARY COMBINATIONS',
+    'COMPARISON',
+    'IMPORTANCE',
+    'RECAP'
+];
+
+let current = 0;
+
+const bar = document.getElementById('bar');
+const count = document.getElementById('count');
+const number = document.getElementById('number');
+const topic = document.getElementById('topic');
+
+function showSlide(index) {
+
+    current = Math.max(0, Math.min(slides.length - 1, index));
+
+    slides.forEach((slide, i) => {
+        slide.classList.toggle('active', i === current);
+    });
+
+    bar.style.width = ((current + 1) / slides.length * 100) + '%';
+
+    count.textContent = (current + 1) + ' / ' + slides.length;
+
+    number.textContent = current + 1;
+
+    topic.textContent = topics[current];
+
+    document.getElementById('prev').disabled = current === 0;
+
+    document.getElementById('next').textContent =
+        current === slides.length - 1 ? 'Start again ↺' : 'Next →';
+}
+
+document.getElementById('prev').addEventListener('click', () => {
+    showSlide(current - 1);
+});
+
+document.getElementById('next').addEventListener('click', () => {
+    showSlide(current === slides.length - 1 ? 0 : current + 1);
+});
+
+// Keyboard navigation
+document.addEventListener('keydown', event => {
+
+    if (['ArrowRight', ' ', 'PageDown'].includes(event.key)) {
+        event.preventDefault();
+        showSlide(current + 1);
+    }
+
+    if (['ArrowLeft', 'PageUp'].includes(event.key)) {
+        event.preventDefault();
+        showSlide(current - 1);
+    }
+
+    if (event.key === 'Home') showSlide(0);
+
+    if (event.key === 'End') showSlide(slides.length - 1);
+});
+
+showSlide(0);
+</script>
+
+</body>
+</html>
